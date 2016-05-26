@@ -9,3 +9,4 @@
 *LOAD BOOTSTRAP
 *************/
 require_once('./system/core/bootstrap.php');
+
