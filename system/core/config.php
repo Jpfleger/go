@@ -1,1 +1,0 @@
-<?php config::get_config(['DATABASE'=>'go','HOSTNAME'=>'127.0.0.1','USERNAME'=>'root','PASSWORD'=>'PuraVida1!','submit'=>'go',]);$install=true;
