@@ -10,3 +10,12 @@
 *************/
 require_once('./system/core/bootstrap.php');
 
+/************
+* BUILD THE ROUTE
+***********/
+$r = new router;
+
+/**********
+ LOAD THE ROUTE
+ **********/
+$r->load();

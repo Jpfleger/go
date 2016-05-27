@@ -28,15 +28,19 @@ require_once('./system/core/mvc.php');
 *LOAD LIB FILES
 **************/
 $libs = scandir('./system/libs/');
+
 //UNSET DIR
 unset($libs[0],$libs[1]);
 $c = config::get_config();
 $c->libs =  $libs;
+
 //LOOP AND LOAD
 foreach($libs as $k => $v){
+    
     //REQUIRE LIBRARIES TO BE LOADED
     require_once('./system/libs/'.$v);
 }
+
 //REQUIRE GO
 require_once('./system/core/go.php');
 
@@ -46,4 +50,6 @@ require_once('./system/core/go.php');
 *************/
 go::get_go();
 
+//HANDLE URL
+require_once('./system/core/router.php');
 
