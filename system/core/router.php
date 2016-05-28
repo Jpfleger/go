@@ -12,23 +12,20 @@ class router {
         
         //GRAB THE ROUTE OF THE 
         $this->route = explode('/', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
-        echo '<pre>';
-        var_dump($_SERVER, PHP_URL_PATH);
-        die();
         
         /***********
         * REMOVE THE INDEX FILE AND THE OPENING BLANK VALUE
         * THIS METHOD WILL NOT BE AFFECTED BY HT ACCESS CHANGES
         ***********/
-        echo '<pre>';
-        var_dump($this->route);
-        foreach($this->route as $k => $v ){
-            if(strtolower($v) == '' || strtolower($v) == 'index.php'){
-                 array_shift($this->route);
-            }
+        
+        
+        
+        foreach($this->route as $k => $seg){   
+            if($seg == '' || $seg == 'index.php'){
+               unset($this->route[$k]);
+            };
         }
-        echo '<pre>';
-        var_dump($this->route);
+        
         /*********
         * LOCATE THE CLASS FILE
         * SET THE CLASS FILE IN THIS ROUTER CLASS
@@ -38,20 +35,22 @@ class router {
         $this->controller = array_shift($this->route);
         
         
-        
-        
-        /*******
-        * LOAD THE CONTROLLER FILE
-        * *****/
-        
-        //$this->load($this->controller);
-        
         /********
         * LOCATE AND SET THE METHOD
         * THIS WILL BE CALLED BY THE BOOTSTRAP FILE
         * *******/
         
         $this->method = array_shift($this->route);
+        
+        
+        /********
+        * CHECK IF THERE IS A METHOD IN THE ARRAY
+        * DEFAULT TO INDEX IF NOT
+        * *******/
+        
+        if(!$this->method){
+            $this->method = 'index';
+        }
         
         /*******
         * NOW ALL THAT REMAINS IS THE VARS FOR THE METHOD TO BE CALLED
@@ -63,25 +62,63 @@ class router {
     }
     
     /**
-     * LOAD THE CONTROLLER FILE
-     * @param string $controller NAME OF THE CONTROLLER CLASS
+     * LOAD THE PATH
      */
     public function load(){
+        
+        /**
+        * LOAD THE CONTROLLER FILE FROM THE 
+        * CONTROLLER APP DIRECTORY BUT ONLY IF EXISTS
+        * IF NOT, RUN 404 PROCESS
+        * ***/
+         
         if(file_exists('./app/controller/'.$this->controller.'.php')){
-            //LOAD THE CONTROLLER FILE
+            
+            /**
+            * CONTROLLER FILE EXISTS IN THE APP DIRECTORY
+            * REQURE THE FILE
+            * **/ 
+            
             require_once('./app/controller/'.$this->controller.'.php');
-            //INSTANTIATE
+            
+            
+            /**
+            * INSTANTIATE THE CONTROLLER
+            * **/
+             
             $route = new $this->controller;
-            //CHECK IF THE METHO EXISTS
+            
+            
+            /**
+            * NOW CHECK IF THE METHOD EXISTS IN THE CONTROLLER CLASS
+            * IF NO METHOD EXISTS THEN THROW 404 PROCESS
+            * */
+             
             if(method_exists($route,$this->method)){
-                //CALL THE METHOD WITH ANY VARS
+                
+                /**
+                * METHOD EXISTS, THE PATH HAS BEEN SUCCESSFULY VALIDATED
+                * CALL THE METHOD WITH ANY VARS
+                * **/
+                 
                 call_user_func_array([$route,$this->method],$this->variables);
 
+             /**
+             * METHOD DOES NOT EXIST
+             * 404
+             * **/
+              
             }else{
                 var_dump($this);
                 //THROW A 404
                 echo '404';
             }
+            
+        /**
+        * CONTROLLER DOES NOT EXIST
+        * 404
+        * **/
+            
         }else{
             var_dump($this);
             //THROW A 404
