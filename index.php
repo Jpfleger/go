@@ -1,4 +1,9 @@
 <?php
+/***
+DEFINE BASE PATH
+***/
+define('BASEPATH','./');
+
 /*************
 *WELCOME TO GO
 *ANOTHER FRAMWORK FROM JOHN PFLEGER
@@ -8,7 +13,7 @@
 /*************
 *LOAD BOOTSTRAP
 *************/
-require_once('./system/core/bootstrap.php');
+require_once(BASEPATH.'/system/core/bootstrap.php');
 
 /************
 * BUILD THE ROUTE
@@ -19,3 +24,4 @@ $r = new router;
  LOAD THE ROUTE
  **********/
 $r->load();
+

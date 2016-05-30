@@ -1,5 +1,6 @@
 <?php
-class welcome extends controller{
+
+class home extends controller{
     
     public function index(){
         echo 'index';

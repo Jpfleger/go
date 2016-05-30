@@ -10,6 +10,7 @@ class router {
      */
     public function __construct(){
         
+        
         //GRAB THE ROUTE OF THE 
         $this->route = explode('/', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
         
@@ -34,6 +35,16 @@ class router {
         
         $this->controller = array_shift($this->route);
         
+        /********
+        * CHECK IF THERE IS A CONTROLLER IN THE ARRAY
+        * DEFAULT TO DEFAULT CONTROLLER IF NOT
+        * *******/
+        
+        if(!$this->controller){
+            $c = config::get_config();
+            
+            $this->controller = $c->DEFAULT_CONTROLLER;
+        }
         
         /********
         * LOCATE AND SET THE METHOD
@@ -72,14 +83,16 @@ class router {
         * IF NOT, RUN 404 PROCESS
         * ***/
          
-        if(file_exists('./app/controller/'.$this->controller.'.php')){
+         
+         
+        if(file_exists(BASEPATH.'app/controller/'.$this->controller.'.php')){
             
             /**
             * CONTROLLER FILE EXISTS IN THE APP DIRECTORY
             * REQURE THE FILE
             * **/ 
             
-            require_once('./app/controller/'.$this->controller.'.php');
+            require_once(BASEPATH.'app/controller/'.$this->controller.'.php');
             
             
             /**
@@ -109,9 +122,7 @@ class router {
              * **/
               
             }else{
-                var_dump($this);
-                //THROW A 404
-                echo '404';
+                require_once(BASEPATH.'app/view/404.php');
             }
             
         /**
@@ -120,9 +131,8 @@ class router {
         * **/
             
         }else{
-            var_dump($this);
             //THROW A 404
-            echo '404';
+            require_once(BASEPATH.'app/view/404.php');
         }
     }
     

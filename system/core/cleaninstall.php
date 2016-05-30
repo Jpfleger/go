@@ -1,17 +1,21 @@
 <?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
     if(isset($_POST['submit'])){
         
         $opp = "<?php config::get_config([";
         foreach($_POST as $s => $v){
-            $opp .= "'".$s."'".'=>'."'".$v."',";
+            $opp .= "'".$s."'".'=>'."'".$v."',".PHP_EOL;
         }
         $opp .= "]);";
-        $opp .="$"."install=true;";
-        $config = fopen('./system/core/config.php','w');
+        $config = fopen(BASEPATH.'system/core/config.php','w');
         fwrite($config,$opp);
         fclose($config);
         header('Location: /');
     }
+
+    require_once(BASEPATH.'system/core/settings.php');
+
 ?>
 <html>
 <head>
@@ -23,10 +27,9 @@
             </div>
             <div style="margin-top:20px;">
                 <form method="post">
-                    <input type="text" name="DATABASE" placeholder="DATABASE NAME"><br />
-                    <input type="text" name="HOSTNAME" placeholder="HOSTNAME"><br />
-                    <input type="text" name="USERNAME" placeholder="USERNAME"><br />
-                    <input type="text" name="PASSWORD" placeholder="PASSWORD"><br />
+                    <?php foreach($settings as $k => $v) :?>
+                    <input  style="width:100%;height:20px;" type="text" name="<?=$v?>" placeholder="<?=$v?>"><br />
+                    <?php endforeach ;?>
                     <input type="submit" name="submit" value="go">
                 </form>
                 
