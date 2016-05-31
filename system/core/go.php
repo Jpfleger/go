@@ -17,19 +17,26 @@ class go{
     *RETURNS THE SINGLE INSTSTANCE THAT WAS LOADED
     *********/
     public static function get_go(){
+        
         //CHECK FOR INSTANCE
         if(!isset(static::$go)){
+            
             //RETURN NEW INSTANCE
             static::$go = new go();
         }
+        
         //RETURN ALREADY SET INSTANCE
         return static::$go;
     }
+    
     //USED TO CONSTRUCT THE FIRST INSTANCE
     private function __construct(){
+        
         //LOAD THE LIBRARIES
         $this->load_libraries();
+
     }
+    
     
     /********
     *LIBRARY LOADER
@@ -37,15 +44,33 @@ class go{
     *********/
     private function load_libraries(){
         $c = config::get_config();
-        //LOAD THE LIBRARIES
+        
+        /*****
+        * LOOP AND LOAD THE LIBRARY FILES
+        *****/
         foreach($c->libs as $k => $v){
-            //SANITIZE NAME
+            
+            /*****
+            * SANATIZE THE NAME FROM THE FILE
+            *****/
             $lib_name = preg_replace('/\\.[^.\\s]{3,4}$/', '', $v);
-            //INSTANTIATE THE LIBRARY AND ADD TO THE SUPER-OBJECT
+            
+            /*****
+            * INSTANTIATE LIBRARAY INTO THE SUPER OBJECT
+            *****/
             $this->{$lib_name} = new $lib_name();
         }
     }
+    
+    
 }
+
+
+
+/**************
+*CONFIG CLASS
+*HOLDS CONFIG SETTINGS 
+**************/
 
 class config{
 

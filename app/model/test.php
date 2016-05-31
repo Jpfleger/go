@@ -11,8 +11,10 @@ class test extends model{
     
     
     
-    private $directive = array(
-        'id' => 'int(10)',
-        'options'=>'var_char(100)'
-    )
+    protected $field_options = array(
+        'id' => 'int(10) AUTO_INCREMENT',
+        'options'=>'varchar(100)',
+        'primary'=>'id'
+    );
+    
 }

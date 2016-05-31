@@ -3,7 +3,9 @@
 class home extends controller{
     
     public function index(){
-        echo 'index';
+        $x = new test;
+        echo '<pre>';
+       // var_dump($x);
     }
     
     public function method($v1,$v2,$v3){

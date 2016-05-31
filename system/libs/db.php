@@ -129,7 +129,6 @@ class db {
     *ROW -> SINGLE RECORD | RESULT -> MULTIPLE RECORDS
     *****/
     
-    
     public function row(){
         
         switch($this->q->protocall){
@@ -159,6 +158,58 @@ class db {
             break;
         }
         
+    }
+    
+    /**
+     * STRAIGHT QUERY OR SIMPLE QUERY OUTSIDE THE LINKED FUNCTION
+     * @param  string $query         QUERY TO BE EXECUTED
+     * @param  boolean [$raw = false] RETURN RAW OR FORMATED RESULTS
+     * @return array RESULT OF THE QUERY FORMATED OR UNFORMATED
+     */
+    public function straight_query($query,$raw = false){
+        
+        /***
+        * SEND QUERY THROUGH TO THE DATABASE
+        ****/
+        $res = $this->con->query($query);
+        
+        /****
+        * CHECK FOR FORMAT
+        *****/
+        if($raw){
+            return $res;
+        }
+        
+        return $this->format($res);
+    }
+    
+    /**
+     * FORMAT THE RESULT INTO A READABLE ARRAY
+     * @param  object $res RESULT FROM THE QUERY
+     * @return array RESULT OF THE QUERY IN FORMATED ARRAY
+     */
+    private function format($res){
+        /**
+        * SET ARRAY AND NEW CLASS FOR RESULT
+        *****/
+        $ret = array();
+
+        
+        /*****
+        * CHECK FOR RESULTS, IF NONE, RETURN EMPTY ARRAY
+        ******/
+        if($res->num_rows == 0){
+            return $ret;
+        }
+        
+        /****
+        * FETCH RESULTS
+        ****/
+        while ($obj = mysqli_fetch_assoc($res)){
+            $ret[] = $obj;
+        }
+        
+        return $ret;;
     }
     
 }
