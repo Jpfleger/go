@@ -1,4 +1,5 @@
 <?php
+defined('BASEPATH') OR exit('No direct script access allowed');
 
 /*************
 *THIS IS THE BOOTSTRAP FILE
@@ -39,14 +40,17 @@ require_once(BASEPATH.'system/core/config.php');
 $libs = scandir(BASEPATH.'system/libs/');
 $c = config::get_config();
 
-//UNSET DIR
-unset($libs[0],$libs[1]);
-
-//ADD LIBRARIES TO CONFIG
-$c->libs = $libs;
+//UNSET BAD OR HIDDEN FILES
+foreach($libs as $k => $v){
+    //CHECK TO MAKE SURE FILE IS A PHP
+    if(strpos($v,'.php') !== false){
+        //ADD LIBRARIES TO CONFIG
+        $c->libs[] = $v;
+    }
+}
 
 //LOOP AND LOAD
-foreach($libs as $k => $v){
+foreach($c->libs as $k => $v){
     
     //REQUIRE LIBRARIES TO BE LOADED
     require_once(BASEPATH.'system/libs/'.$v);
@@ -59,13 +63,18 @@ foreach($libs as $k => $v){
 $mod = scandir(BASEPATH.'app/model/');
 
 //UNSET DIR
-unset($mod[0],$mod[1]);
+//UNSET BAD OR HIDDEN FILES
+foreach($mod as $k => $v){
+    //CHECK TO MAKE SURE FILE IS A PHP
+    if(strpos($v,'.php') !== false){
+        //ADD LIBRARIES TO CONFIG
+        $c->mod[] = $v;
+    }
+}
 
-//SET MODELS TO CONFIG
-$c->mod = $mod;
 
 //LOOP AND LOAD
-foreach($mod as $k => $v){
+foreach($c->mod as $k => $v){
     //REQUIRE LIBRARIES TO BE LOADED
     require_once(BASEPATH.'app/model/'.$v);    
 }

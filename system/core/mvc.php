@@ -1,4 +1,5 @@
 <?php
+defined('BASEPATH') OR exit('No direct script access allowed');
 
 class controller{
     /**
@@ -7,6 +8,7 @@ class controller{
      */
     public function __construct(){
         $this->go = go::get_go(); 
+        $this->config = config::get_config();
     }
 }
 
@@ -17,10 +19,14 @@ class view{
      */
     public function __construct(){
         $this->go = go::get_go(); 
+        $this->config = config::get_config();
     }
 }
 
 class model{
+    
+    private $primary = 'id';
+    
     /**
      * CONSTRUCTOR FUNCTION GETS GO
      * @private
@@ -32,6 +38,16 @@ class model{
         $this->go = go::get_go();
         
         /****
+        *GET THE DB SUPER OBJECT
+        ****/
+        $this->db = db::get_db();
+        
+        /*****
+        *GET THE CONFIG
+        *****/
+        $this->config = config::get_config();
+        
+        /****
         *GRAB THE NAME OF THE MODEL
         ****/
         $this->model = get_class($this);
@@ -41,8 +57,41 @@ class model{
         ***/
         $this->check_database();
         
+        /****
+        * SET THE PRIMARY KEY
+        *****/
+        
+        if(isset($this->field_options['primary'])){
+            $this->primary = $this->field_options['primary'];
+        }
+        
+        /**
+        * UNSET THE FIELD OPTIONS IF THEY EXIST
+        ***/
+        if(isset($this->field_options)){
+            unset($this->field_options);    
+        }
+        
     }
     
+    /**
+     * GETS A RECORD BY A PRIMARY KEY
+     * BY DEFAULT, GO WILL SEARCH FOR ANY PRIMARY KEY 
+     * DECLARED IN A PRIMARY 
+     */
+    public function get($id){
+        
+    }
+    
+    
+    
+    
+    
+    /******
+    * AUTOMATIC DATABASE MAKER FUNCTIONS
+    * THESE WILL CREATE A DATABASE TABLE FOR ANY MODEL CLASS
+    * OR UPDATE THE FIELDS IN AN ALREADY CREATED DATABASE TO REFLECT THE MODEL CLASS
+    ********/
     
     /**
      * CHECK THE DATABASE AND BUILD THE TABLE IF NECESSARY
@@ -52,15 +101,78 @@ class model{
         /*****
         * IF NOT IN DATABSE, BUILD TABLE
         *****/
-        $result = $this->go->db->straight_query('SHOW COLUMNS FROM '.$this->model);
+        $result = $this->db->con->query('SHOW COLUMNS FROM '.$this->model);
         
         /**
         * NOW TABLE FOR THIS CALL IN THE DATABASE
         * BUILD IF EMPTY
         ***/
         if(empty($result)){
-            $this->build_me();    
+            $this->build_me();
+            return;
         }
+        
+        /***
+        * FORMAT THE RESULTS TO PLACE THE FILED NAME AS THE KEY IN THE ARRAY
+        *****/
+        
+        foreach($result as $k => $v){
+            $fields_array[strtolower($v['Field'])] = $v;
+        }
+                
+        /**
+        * CHECK THE FIELDS IN THE CLASS AGAINST THE TABLE
+        * IF THERE ARE CHANGES, MAKE THEM
+        *****/
+        $fields = get_class_vars(get_class($this));
+        unset($fields['field_options']);
+        
+        /**
+        * LOOP THROUGH THE FIELDS CHECK FOR
+        * FIELD OPTIONS
+        * ***/
+        foreach($fields as $field => $f){
+            /***
+            *CHECK FOR FIELD EXISTS
+            ***/
+            
+            if(!isset($fields_array[$field]) && strtolower($field) != 'primary'){
+                /******
+                * NO FIELD IS IN DB, MAKE A NEW FIELD
+                ******/
+                $sql = 'ALTER TABLE '. get_class($this) .' ADD '.$field;
+                
+                /******
+                * CHECK FOR FIELD OPTIONS
+                ******/
+                if(isset($this->field_options[$field])){
+                    $sql .=' '.$this->field_options[$field];
+                }else{
+                    $sql .=' VARCHAR(255)';
+                }
+                
+                /*****
+                * CREARE THE FIELD
+                ******/
+                echo '<pre>Altering Table</pre> '.$sql;
+                $this->db->con->query($sql);
+                
+            }else{
+                
+                /****
+                * FIELD EXISTS, MAKE SURE THERE AREN'T ANY CHANGES TO THE OPTIONS
+                * TO COME 
+                ****/
+                
+            }
+            
+        }
+        
+        
+        
+        
+        
+        
          
     }
     
@@ -80,6 +192,7 @@ class model{
         $sql = 'CREATE TABLE '.$this->model.' ';
         
         if($this->field_options){
+            
             /*****
             * HAS FIELD OPTIONS
             * UNSET THE FIELD OPTIONS IN THE FIELD ARRAY
@@ -166,7 +279,7 @@ class model{
         *BUILD THE TABLE
         ******/
         echo '<pre>Creating: '.$sql.' ('.implode(', ',$sql_fields).')'.'</pre>';
-        $RES = $this->go->db->straight_query( $sql.' ('.implode(', ',$sql_fields).')' );
+        $RES = $this->db->con->query( $sql.' ('.implode(', ',$sql_fields).')' );
     }
     
     

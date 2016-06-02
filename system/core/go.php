@@ -1,5 +1,6 @@
 <?php
-
+defined('BASEPATH') OR exit('No direct script access allowed');
+ 
 /*************
 *MAIN SUPER OBJECT
 *THIS WILL GET INSTANTIATED ONCE AND ALL LIBRARIES WILL BE LOADED INTO THE OBJECT 
@@ -99,5 +100,53 @@ class config{
             $this->{$k} = $v;
         }
         
+    }
+}
+
+/**************
+*DATABASE CLASS
+*HOLDS DATABASE SETTINGS 
+**************/
+
+class db{
+
+    private static $db;
+    /**
+     * SINGLETON FUNCTION
+     * @return regExp RETURNS INSTANCE
+     */
+    public static function get_db(){
+        //CHECK FOR INSTANCE
+        if(!isset(static::$db)){
+            //RETURN NEW INSTANCE
+            static::$db = new db();
+        }
+        //RETURN ALREADY SET INSTANCE
+        return static::$db;
+    }
+    
+    /**
+     * CONSTRUCTOR
+     * @private
+     */
+    private function __construct(){
+        //LOOP AND SET THE SETTINGS
+        $this->connect();
+    }
+    
+     /**
+     * CONNECT THE THE DATABASE
+     */
+    private function connect(){
+        //CREATE CONNECTION VARIABLE
+        $c = config::get_config();
+        $this->con = mysqli_connect($c->HOSTNAME, $c->USERNAME, $c->PASSWORD,$c->DATABASE);
+        
+        //CONNECTION ISSUE?
+        if(!$this->con){
+            echo "Error: Unable to connect to MySQL." . PHP_EOL;
+            echo "Debugging errno: " . mysqli_connect_errno() . PHP_EOL;
+            echo "Debugging error: " . mysqli_connect_error() . PHP_EOL;
+        } 
     }
 }
