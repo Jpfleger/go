@@ -1,19 +1,6 @@
 <?php
 
 class query{
-    /*****
-    *GET THE DATABASE CONNECTION
-    *****/
-    private $db; 
-    private $qc;
-    
-    public function __construct(){
-        /******
-        *GET THE DATABASE CONNECTION
-        ******/
-        $this->db = db::get_db();
-    }
-        
     
     /*******
     *PUBLIC LINKED FUNCTIONS
@@ -26,7 +13,8 @@ class query{
      * @return object THIS
      */
     public function select($string){
-        
+        $this->query_type = 'SELECT';
+        $this->fields = $string;
         return $this;
     }
     
@@ -36,7 +24,8 @@ class query{
      * @return object THIS
      */
     public function insert($array){
-
+        $this->query_type = 'INSERT';
+        $this->data = $array;
         return $this;
     }
     
@@ -46,7 +35,8 @@ class query{
      * @return object THIS
      */
     public function update($array){
-
+        $this->query_type = 'UPDATE';
+        $this->data = $array;
         return $this;
     }
     
@@ -56,10 +46,93 @@ class query{
      * @return object THIS
      */
     public function delete($array){
-
+        $this->data = $array;
+        $this->query_type = 'DELETE';
         return $this;
     }
     
+    /**
+     * TABLE SETTING FUNCTIONS
+     * @param  sting $table TABLE TO INSERT
+     * @return object THIS
+     */
+    public function into($table){
+        $this->table = $table;
+        return $this;
+    }
+    
+    public function in($table){
+        $this->table = $table;
+        return $this;
+    }
+    
+    public function from($table){
+        $this->table = $table;
+        return $this;
+    }
+    
+    
+    /**
+     * WHERE CLAUSE
+     * @param  string $string NOTHING FANCY, JUST THE WHERE CLAUSE
+     * @return object THIS
+     */
+    public function where($string){
+        $this->sql_statement .= ' WHERE '.$string;
+        return $this;
+    }
+    
+    
+    
+    
+    /**
+     * BUILD SQL STATEMENT, FIRE AND RETURN QUERY RESULT OBJECT
+     * @return object QUERY RESULT OBJECT
+     */
+    public function go(){
+        
+        switch($this->query_type){
+            case 'INSERT':
+                $fields = array_keys($this->data);
+                $sql = 'INSERT INTO '.$this->table.' ( '.implode(', ',$fields).') VALUES(';
+                foreach($this->data as $k => $v){
+                    if(is_numeric($v)){
+                        $sql .= ' '.$v;
+                    }else{
+                        $sql .= ' "'.$v.'"';
+                    }
+                }
+                $sql .=')';
+            break;
+                
+            case 'UPDATE':
+                $fields = array_keys($this->data);
+                foreach($this->data as $k => $v){
+                    $change = $k.'=';
+                    if(is_numeric($v)){
+                        $change .=$v;
+                    }else{
+                        $change .='"'.$v.'"';
+                    }
+                    $updates[] = $change;
+                }
+                $sql = 'UPDATE '.$this->table.' SET '.implode(', ',$updates);
+                
+                if(isset($this->where)){
+                    $sql .= ' WHERE '.$this->where;
+                }    
+            break;
+                
+            case 'SELECT':
+                $sql = 'SELECT '.$this->fields.' FROM '.$this->table;
+                if(isset($this->where)){
+                    $sql .=' WHERE '.$this->where;
+                }
+            break;
+        }
+        
+        return $this->sql($sql);
+    }
     
     
     /**
@@ -69,6 +142,10 @@ class query{
      */
     public function sql($query){
         
+        /******
+        *GET THE DATABASE CONNECTION
+        ******/
+        $db = db::get_db();
         
         /****
         * ADD QUERIES TO GO FOR DEBUGGING
@@ -79,18 +156,18 @@ class query{
         /***
         * SEND QUERY THROUGH TO THE DATABASE
         ****/
-        $res = $this->db->con->query($query);
+        $res = $db->con->query($query);
         
         
         /****
         * CHECK FOR ERROR AND DISPLAY IF ERROR
         * ***/
-        if($this->db->con->error){
+        if($db->con->error){
             
             /*******
             * ALERT ERROR
             * ****/
-            echo $this->db->con->error;
+            echo $db->con->error;
             die();
         }
         
@@ -109,19 +186,9 @@ class query{
 *********/
 
 class query_result {
+
     
-    /**
-    * RESULT ARRAY
-    **/
-    public $records;
-    
-    /**
-    * MODELS ARRAY
-    **/ 
-    public $models;
-    
-    
-    public function __construct($res,$query){
+    public function __construct($res){
         
         /****
         * FORMAT RESULT INTO ARRAY AND ADD TO THE RECORDS VAR
@@ -134,16 +201,25 @@ class query_result {
         $this->records = $this->format($res);
     }
     
-    /**
+    
+    /****
      * MODELIZE WILL TURN RESULTS INTO ACITONABLE MODELS
      * @param string $table REQUIRED TO HAVE THE NAME OF THE TABLE 
-     */
+     ***/
     public function modelize($table){
+        
+        /***
+        * CHECK TO MAKE SURE THERE ARE RECORDS TO BE TURNED INTO MODEL
+        ****/
+        if(empty($this->records)){
+            $this->models = [];
+            return;
+        }
         
         /***
         * LOOP RESULTS AND INSTANTIATE MODEL
         ****/
-        foreach($this->result as $k => $v){
+        foreach($this->records as $k => $v){
             
             $x = new $table;
             

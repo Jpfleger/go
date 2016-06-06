@@ -32,20 +32,6 @@ class model{
      * @private
      */
     public function __construct(){
-        /**
-        *GET THE SUPER OBJECT
-        */
-        $this->go = go::get_go();
-        
-        /****
-        *GET THE DB SUPER OBJECT
-        ****/
-        $this->db = db::get_db();
-        
-        /*****
-        *GET THE CONFIG
-        *****/
-        $this->config = config::get_config();
         
         /****
         *GRAB THE NAME OF THE MODEL
@@ -60,15 +46,15 @@ class model{
         /****
         * SET THE PRIMARY KEY
         *****/
-        
         if(isset($this->field_options['primary'])){
             $this->primary = $this->field_options['primary'];
         }
-        
+
         /**
         * UNSET THE FIELD OPTIONS IF THEY EXIST
         ***/
         if(isset($this->field_options)){
+            
             unset($this->field_options);    
         }
         
@@ -83,10 +69,82 @@ class model{
         
     }
     
+    /**
+     * SIMPLE ROUTING FUNCTION
+     */
+    public function save(){
+        
+        /***
+        * CHECK FOR PRIMARY IN FIELD OPTIONS
+        * IF ID ISSET UPDATE, OTHERWISE CREATE
+        ****/
+        if( isset($this->{$this->primary})){
+            $this->update();
+        }
+        else{
+            $this->create();
+        }
+    }
+    
+    /**
+     * INSERT THE MODEL INTO THE DATABSE
+     */
+    private function create(){
+        
+        /*****
+        * GET TABLE FIELDS
+        ******/
+        $table_fields = get_class_vars(get_class($this));
+        
+        /****
+        * UNSET SOME FIELDS
+        ****/
+        unset($table_fields['primary'],$table_fields['field_options']);
+        
+        /****
+        * LOOP THROUGH THE TABLES AND CREATE DATA FOR QUERY CALL
+        ****/
+        foreach($table_fields as $field => $null){
+            if(isset($this->{$field})){   
+                $data[$field] = $this->{$field};
+            }
+        }
+        
+        /***
+        * PUSH INTO DATABASE
+        ****/
+        $go = go::get_go();
+        $go->query->insert($data)->into(get_class($this))->go();
+    }
     
     
-    
-    
+    private function update(){
+        
+        /*****
+        * GET TABLE FIELDS
+        ******/
+        $table_fields = get_class_vars(get_class($this));
+        
+        /****
+        * UNSET SOME FIELDS
+        ****/
+        unset($table_fields['primary'],$table_fields['field_options']);
+        
+        /****
+        * LOOP THROUGH THE TABLES AND CREATE DATA FOR QUERY CALL
+        ****/
+        foreach($table_fields as $field => $null){
+            if(isset($this->{$field})){
+                $data[$field] = $this->{$field};
+            }
+            
+        }
+        /***
+        * PUSH INTO DATABASE
+        ****/
+        $go = go::get_go();
+        $go->query->update($data)->in(get_class($this))->go();
+    }
     /******
     * AUTOMATIC DATABASE MAKER FUNCTIONS
     * THESE WILL CREATE A DATABASE TABLE FOR ANY MODEL CLASS
@@ -101,7 +159,8 @@ class model{
         /*****
         * IF NOT IN DATABSE, BUILD TABLE
         *****/
-        $result = $this->db->con->query('SHOW COLUMNS FROM '.$this->model);
+        $db = db::get_db();
+        $result = $db->con->query('SHOW COLUMNS FROM '.$this->model);
         
         /**
         * NOW TABLE FOR THIS CALL IN THE DATABASE
@@ -155,7 +214,7 @@ class model{
                 * CREARE THE FIELD
                 ******/
                 echo '<pre>Altering Table</pre> '.$sql;
-                $this->db->con->query($sql);
+                $db->con->query($sql);
                 
             }else{
                 
@@ -278,8 +337,9 @@ class model{
         /*****
         *BUILD THE TABLE
         ******/
+        $db = db::get_db();
         echo '<pre>Creating: '.$sql.' ('.implode(', ',$sql_fields).')'.'</pre>';
-        $RES = $this->db->con->query( $sql.' ('.implode(', ',$sql_fields).')' );
+        $RES = $db->con->query( $sql.' ('.implode(', ',$sql_fields).')' );
     }
     
     
