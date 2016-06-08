@@ -1,8 +1,4 @@
 <?php
-/***
-DEFINE BASE PATH
-***/
-define('BASEPATH','./');
 
 /*************
 *WELCOME TO GO
@@ -10,10 +6,20 @@ define('BASEPATH','./');
 *YOU DON'T NEED TO MAKE ANY CHANGES TO THIS FILE
 **************/
 
+/***
+* DEFINE BASE PATH
+***/
+define('BASEPATH','./');
+
+/***
+* DEFINE RELATIVE PATH FOR LOADING TO PUBLIC VIEW
+***/
+define('RELATIVEPATH','/');
+
 /*************
 *LOAD BOOTSTRAP
 *************/
-require_once(BASEPATH.'/system/core/bootstrap.php');
+require_once(BASEPATH.'system/core/bootstrap.php');
 
 /************
 * BUILD THE ROUTE

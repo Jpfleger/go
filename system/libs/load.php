@@ -7,11 +7,13 @@ class load{
      * @param array [$include_go = false] INCLUDE THE GO BASE FILE
      */
     public function view($view,$data = false,$include_go = false){
+        
         /***
         * EXTRACT DATA IF THERE
         ****/
         if( $data ) extract($data);
         if( $include_go ) $go = go::get_go();
+        
         /***
         * LOAD THE VIEW
         ****/ 
@@ -35,13 +37,12 @@ class load{
         /*****
         * IF FILE IS PROVIDED, LOAD THAT FILE
         *****/ 
+        
         if($file){
-            echo '<link rel="stylesheet" href="'.BASEPATH.'css/'.$file.'.css?go=1" ></link>';
+            echo '<link rel="stylesheet" href="'.RELATIVEPATH.'css/'.$file.'.css" >';
             return;
         }
-        /***
-        * GRAB FILES IN CSS 
-        ****/
+
     }
     /**
      * LOAD THE JS FILE
@@ -53,11 +54,23 @@ class load{
         * IF FILE IS PROVIDED, LOAD THAT FILE
         *****/ 
         if($file){
-            echo '<script src="'.BASEPATH.'js/'.$file.'.js" ></script>';
+            echo '<script src="'.RELATIVEPATH.'js/'.$file.'.js" ></script>';
             return;
         }
-        /***
-        * GRAB FILES IN CSS 
-        ****/
+
+    }
+    
+    /**
+     * LOAD GOOGLE BOOTSTAP
+     */
+    public function bootstrap(){
+        echo '<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">';
+    }
+    
+    /**
+     * LOAD JQUERY
+     */
+    public function jquery(){
+        echo '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>';
     }
 }

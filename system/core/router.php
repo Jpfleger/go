@@ -33,7 +33,7 @@ class router {
         * THIS WILL BE INSTANTIATED IN THE BOOTSTRAP FILE
         * *******/
         
-        $this->controller = array_shift($this->route);
+        $this->controller = strtolower( array_shift($this->route) );
         
         /********
         * CHECK IF THERE IS A CONTROLLER IN THE ARRAY
@@ -51,7 +51,7 @@ class router {
         * THIS WILL BE CALLED BY THE BOOTSTRAP FILE
         * *******/
         
-        $this->method = array_shift($this->route);
+        $this->method = strtolower( array_shift($this->route) );
         
         
         /********
@@ -83,7 +83,29 @@ class router {
         * IF NOT, RUN 404 PROCESS
         * ***/
          
-         
+        /****
+        * CHECK IF CONTROLLER IS GATED
+        ****/
+        $c = config::get_config();
+        if( $c->GATED ){
+            
+            /*****
+            * APPLICATION IS GATED, CHECK IF CONTROLLER IS GATED
+            ******/
+            if( !in_array($this->controller, $c->NON_GATED_CONTROLLERS ) ){
+                
+                /****
+                * CONTROLLER IS GATED, REPLACE WITH FALLBACK
+                *****/
+                $this->controller = strtolower( $c->GATED_FALLBACK_CONTROLLER );
+                
+                /****
+                * REPLACE WITH DEFAULT METHOD 
+                *****/
+                $this->method = 'index';
+                
+            }
+        }
          
         if(file_exists(BASEPATH.'app/controller/'.$this->controller.'.php')){
             

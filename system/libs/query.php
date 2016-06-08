@@ -91,10 +91,17 @@ class query{
      */
     public function go(){
         
+        /***
+        * SWTICH STATEMENT FOR QUERY TYPE
+        ****/
         switch($this->query_type){
+                
+            
             case 'INSERT':
+                
                 $fields = array_keys($this->data);
                 $sql = 'INSERT INTO '.$this->table.' ( '.implode(', ',$fields).') VALUES(';
+
                 foreach($this->data as $k => $v){
                     if(is_numeric($v)){
                         $sql .= ' '.$v;
@@ -102,6 +109,7 @@ class query{
                         $sql .= ' "'.$v.'"';
                     }
                 }
+
                 $sql .=')';
             break;
                 
@@ -128,6 +136,9 @@ class query{
                 if(isset($this->where)){
                     $sql .=' WHERE '.$this->where;
                 }
+            break;
+            case 'DELETE':
+                $sql = 'DELETE FROM '.$this->table.' WHERE '.$this->where;
             break;
         }
         
