@@ -6,6 +6,7 @@
 
 class alert{
     
+    
     /**
      * ERROR OUT
      * @param string $error ERROR TO BE DISPLATED
@@ -15,6 +16,5 @@ class alert{
         echo '<pre>'.$error.'</pre>';
         echo '</div>';
     }
-
 
 }

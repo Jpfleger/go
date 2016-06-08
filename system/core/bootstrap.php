@@ -15,7 +15,7 @@ require_once(BASEPATH.'system/core/go.php');
 *CLEAN INSTALL
 **************/
 if(!file_exists(BASEPATH.'system/core/config.php')){
-    require_once(BASEPATH.'system/core/cleaninstall.php');
+    require_once(BASEPATH.'system/core/install.php');
     die();
 }
 

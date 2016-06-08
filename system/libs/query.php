@@ -177,6 +177,11 @@ class query{
         $qr = new query_result($res);
         $qr->query = $query;
         
+        /***
+        *FREE RESULT
+        ***/
+        mysqli_free_result($res);
+        
         return $qr;
     }
 }
