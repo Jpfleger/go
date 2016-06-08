@@ -158,10 +158,15 @@ class query{
         ******/
         $db = db::get_db();
         
+        /******
+        *GET GO
+        ******/
+        $go = go::get_go();
+        
         /****
         * ADD QUERIES TO GO FOR DEBUGGING
         * ***/
-        $this->go->queries[] = $query;
+        $go->queries[] = $query;
         
         
         /***

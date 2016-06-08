@@ -31,3 +31,8 @@ $r = new router;
  **********/
 $r->load();
 
+/**********
+ UNLOAD THE ROUTE 
+ DEBUG = FALSE
+ **********/
+$r->unload(false);

@@ -14,12 +14,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         $opp .= "'GATED_FALLBACK_CONTROLLER' => ''".PHP_EOL;
         $opp .= "'DATABASE_SESSION_TABLE_NAME' => 'go_session'".PHP_EOL;
         $opp .= "'SESSION_NAME' => 'go_ses'".PHP_EOL;
+        $opp .= "'MONGODB' => FALSE".PHP_EOL;
+        $opp .= "'MONGO_DB_NAME' => ''".PHP_EOL;
+        $opp .= "'MONGO_LOCATION' => ''".PHP_EOL;
+        
         $opp .= "]);";
         
         //WRITE THE CONFIG
         $config = fopen(BASEPATH.'system/core/config.php','w');
         fwrite($config,$opp);
         fclose($config);
+        
         header('Location: /');
     }
 ?>

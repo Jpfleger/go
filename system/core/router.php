@@ -158,4 +158,21 @@ class router {
         }
     }
     
+    
+    
+    public function unload($debug = false){
+        
+        if(!$debug) return;
+        
+        /**
+        *GET GO
+        ***/
+        $go = go::get_go();
+        
+        echo '<hr>';
+        foreach( $go->queries as $k => $q){
+            $go->alert->debug($q);
+        }
+    }
+    
 }
