@@ -1,7 +1,5 @@
 <html>
     <head>
-        <?= $go->load->jquery(); ?>
-        <?= $go->load->bootstrap(); ?>
         <?= $go->load->css('style'); ?>
     </head>
     <body>

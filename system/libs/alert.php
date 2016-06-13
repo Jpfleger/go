@@ -19,7 +19,7 @@ class alert{
     
     /**
      * DEBUG
-     * @param string $error ERROR TO BE DISPLATED
+     * @param string $error DEBUG TO BE DISPLATED
      */
     public function debug($error){
         echo '<div style="display:block;background-color:lightgrey;font-weight:600;font-size:14pt;">';

@@ -1,10 +1,14 @@
 <?php
-
 /*************
 *WELCOME TO GO
 *ANOTHER FRAMWORK FROM JOHN PFLEGER
 *YOU DON'T NEED TO MAKE ANY CHANGES TO THIS FILE
 **************/
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+//phpinfo();
 
 /***
 * DEFINE BASE PATH

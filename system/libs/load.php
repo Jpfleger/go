@@ -12,7 +12,7 @@ class load{
         * EXTRACT DATA IF THERE
         ****/
         if( $data ) extract($data);
-        if( $include_go ) $go = go::get_go();
+        $go = go::get_go();
         
         /***
         * LOAD THE VIEW
@@ -20,6 +20,11 @@ class load{
         require_once(BASEPATH.'app/view/'.$view.'.php');
     }
     
+    /**
+     * LOAD A TEMPLATE FILE
+     * @param  string $view NAME OF THE FILE
+     * @return file RETURNED FILE AS STRING
+     */
     public function template($view){
         
         /***

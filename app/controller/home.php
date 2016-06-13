@@ -8,16 +8,14 @@ class home extends controller{
      * CREATE A NEW FUNCTION AND CALL IT INDEX.PHP/CONTROLLER/METHOD/VAR1/VAR2 
      */
     public function index(){
-
-        if( $this->go->session->check() ){
-           var_dump($this->go->session->data());
-        }else{
-           echo 'not set';
-        }
-        $this->go->load->view('go/welcome',false,true);
+        /*****
+        * LOAD THE A VIEW
+        * LOCATION OF VIEW, DATA ARRAY, [INCLUDE GO]
+        *****/
+        $this->go->load->view('go/welcome',array(),true);
     }
 
     
-    
+
     
 }
