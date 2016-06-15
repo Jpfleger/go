@@ -66,8 +66,61 @@ class model{
      * DECLARED IN A PRIMARY 
      */
     public function get($id){
+        /***
+        * GET GO AND QUERY
+        ****/
+        $go = go::get_go();
+        $res = $go->query->select('*')->from(get_class($this))->where($this->primary.'='.$id)->go();
+        
+        /****
+        * UNSET SOME FIELDS
+        ****/
+        $table_fields = get_class_vars(get_class($this));
+        
+        /****
+        * UNSET SOME FIELDS
+        ****/
+        unset($table_fields['primary'],$table_fields['field_options']);
+        
+        /****
+        * SET FIELD VALUES
+        ****/
+        foreach($table_fields as $field => $null){
+            $this->{$field} = $res->row[$field];
+        }
         
     }
+    
+    
+    /**
+     * GRABS THE FIRST RESULT AND LOADS THE CLASS BASED ON ASSOC ARRAY
+     * @param array $data ARRAY TO QUERY
+     */
+    public function grab($data){
+        /****
+        * GET GO AND QUERY
+        ****/
+        $go = go::get_go();
+        $res = $go->query->select('*')->from(get_class($this))->where($data)->go();
+        
+        /****
+        * UNSET SOME FIELDS
+        ****/
+        $table_fields = get_class_vars(get_class($this));
+        
+        /****
+        * UNSET SOME FIELDS
+        ****/
+        unset($table_fields['primary'],$table_fields['field_options']);
+        
+        /****
+        * SET FIELD VALUES
+        ****/
+        foreach($table_fields as $field => $null){
+            $this->{$field} = $res->row[$field];
+        }
+    }
+    
     
     /**
      * SIMPLE ROUTING FUNCTION
