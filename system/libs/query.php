@@ -96,23 +96,26 @@ class query{
         ****/
         switch($this->query_type){
                 
-            
+            /**
+            * INSERT
+            **/
             case 'INSERT':
-                
                 $fields = array_keys($this->data);
-                $sql = 'INSERT INTO '.$this->table.' ( '.implode(', ',$fields).') VALUES(';
-
+                $sql = 'INSERT INTO '.$this->table.' ('.implode(', ',$fields).') VALUES(';
                 foreach($this->data as $k => $v){
                     if(is_numeric($v)){
-                        $sql .= ' '.$v;
+                        $vals[] = $v;
                     }else{
-                        $sql .= ' "'.$v.'"';
+                        $vals[] = '"'.$v.'"';
                     }
                 }
 
-                $sql .=')';
+                $sql .= implode(',',$vals ).')';
             break;
                 
+            /**
+            * UPDATE
+            **/    
             case 'UPDATE':
                 $fields = array_keys($this->data);
                 foreach($this->data as $k => $v){
@@ -124,6 +127,7 @@ class query{
                     }
                     $updates[] = $change;
                 }
+                
                 $sql = 'UPDATE '.$this->table.' SET '.implode(', ',$updates);
                 
                 if(isset($this->where)){
@@ -131,12 +135,19 @@ class query{
                 }    
             break;
                 
+            /**
+            * SELECT
+            **/    
             case 'SELECT':
                 $sql = 'SELECT '.$this->fields.' FROM '.$this->table;
-                if(isset($this->where)){
+                if( isset($this->where) ){
                     $sql .=' WHERE '.$this->where;
                 }
             break;
+                
+            /**
+            * DELETE
+            **/
             case 'DELETE':
                 $sql = 'DELETE FROM '.$this->table.' WHERE '.$this->where;
             break;
@@ -152,7 +163,7 @@ class query{
      * @return object RETURNS FORMATED ARRAY
      */
     public function sql($query){
-        
+        echo $query;
         /******
         *GET THE DATABASE CONNECTION
         ******/

@@ -2,6 +2,7 @@
     <head>
         <?= $go->load->css('bootstrap'); ?>
         <?= $go->load->css('style'); ?>
+        <?= $go->load->js('jquery'); ?>
     </head>
     <body>
         <div class="container">

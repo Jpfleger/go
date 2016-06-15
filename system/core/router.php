@@ -20,7 +20,6 @@ class router {
         ***********/
         
         
-        
         foreach($this->route as $k => $seg){   
             if($seg == '' || $seg == 'index.php'){
                unset($this->route[$k]);

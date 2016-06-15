@@ -16,6 +16,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         $opp .= "'SESSION_NAME' => 'go_ses',".PHP_EOL;
         $opp .= "'MONGODB' => FALSE,".PHP_EOL;
         $opp .= "'MONGO_DB_NAME' => '',".PHP_EOL;
+        $opp .= "'HASH_TYPE' => 'sha256',".PHP_EOL;
         $opp .= "'MONGO_LOCATION' => ''".PHP_EOL;
         
         $opp .= "]);";
