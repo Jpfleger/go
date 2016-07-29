@@ -21,6 +21,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         
         $opp .= "]);";
         
+        
         //WRITE THE CONFIG
         $config = fopen(BASEPATH.'system/core/config.php','w');
         fwrite($config,$opp);
