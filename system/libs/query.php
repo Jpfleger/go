@@ -200,6 +200,7 @@ class query{
         
         /***
         * RETURN FORMATED RESULT
+        * 
         ****/
         $qr = new query_result($res);
         $qr->query = $query;
