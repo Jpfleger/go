@@ -167,7 +167,8 @@ class model{
         * PUSH INTO DATABASE
         ****/
         $go = go::get_go();
-        $go->query->insert($data)->into(get_class($this))->go();
+        $s = $go->query->insert($data)->into(get_class($this))->go();
+        var_dump($s);
     }
     
     

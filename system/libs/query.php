@@ -224,6 +224,11 @@ class query{
         $qr = new query_result($res);
         $qr->query = $query;
         
+        /****
+         *SET QUERY ID
+        ***/
+        $qr->id = mysqli_insert_id($db->con);
+        
         /***
         *FREE RESULT
         ***/
