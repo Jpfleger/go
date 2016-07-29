@@ -78,7 +78,7 @@ class query{
      * @return object THIS
      */
     public function where($string){
-        $this->sql_statement .= ' WHERE '.$string;
+        $this->where = $string;
         return $this;
     }
     
@@ -140,7 +140,28 @@ class query{
             **/    
             case 'SELECT':
                 $sql = 'SELECT '.$this->fields.' FROM '.$this->table;
-                if( isset($this->where) ){
+                if( isset($this->where) && is_array($this->where) ){
+                    
+                    /***
+                    * WHERE IS AN ARRAY SORT DATA
+                    ****/
+                    foreach($this->where as $field => $value){
+                        if( is_numeric($value) ){
+                            $data[] = $field.'='.$value;
+                        }else{
+                            $data[] = $field.'="'.$value.'"';
+                        }
+                    }
+                    
+                    /***
+                     * BUILD WHERE CLAUSE
+                    ****/
+                    $sql .=' WHERE '.implode('AND ',$data);
+                    
+                }else if( isset( $this->where ) ){
+                    /***
+                    * WHERE IS A STRING
+                    ****/
                     $sql .=' WHERE '.$this->where;
                 }
             break;
@@ -163,7 +184,6 @@ class query{
      * @return object RETURNS FORMATED ARRAY
      */
     public function sql($query){
-        echo $query;
         /******
         *GET THE DATABASE CONNECTION
         ******/
@@ -192,10 +212,10 @@ class query{
         if($db->con->error){
             
             /*******
-            * ALERT ERROR
+            * RETURN ERROR
             * ****/
-            echo $db->con->error;
-            die();
+
+            return (object)['result'=>false,'error'=>$db->con->error];
         }
         
         /***
@@ -205,11 +225,24 @@ class query{
         $qr = new query_result($res);
         $qr->query = $query;
         
+        /****
+        *SET RESULT TO TRUE
+        ****/
+        $qr->result = true;
+        
+        /****
+         *SET QUERY ID
+        ***/
+        $qr->id = mysqli_insert_id($db->con);
+        
         /***
         *FREE RESULT
         ***/
         mysqli_free_result($res);
         
+        /***
+        *RETURN THE RESULTS
+        ****/
         return $qr;
     }
 }
@@ -222,16 +255,15 @@ class query_result {
 
     
     public function __construct($res){
-        
-        /****
-        * FORMAT RESULT INTO ARRAY AND ADD TO THE RECORDS VAR
-        *****/
-        $this->query = $query;
-        
         /****
         * FORMAT RESULT INTO ARRAY AND ADD TO THE RECORDS VAR
         *****/
         $this->records = $this->format($res);
+        
+        /****
+        * GRAB FIRST RESULT AND PLACE IT IN ROW
+        *****/
+        $this->row = $this->records[0];
     }
     
     
@@ -269,6 +301,7 @@ class query_result {
             $this->model[] = $x;
         }      
     }
+    
     
     /**
      * FORMAT THE RESULT INTO A READABLE ARRAY

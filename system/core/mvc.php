@@ -66,8 +66,61 @@ class model{
      * DECLARED IN A PRIMARY 
      */
     public function get($id){
+        /***
+        * GET GO AND QUERY
+        ****/
+        $go = go::get_go();
+        $res = $go->query->select('*')->from(get_class($this))->where($this->primary.'='.$id)->go();
+        
+        /****
+        * UNSET SOME FIELDS
+        ****/
+        $table_fields = get_class_vars(get_class($this));
+        
+        /****
+        * UNSET SOME FIELDS
+        ****/
+        unset($table_fields['primary'],$table_fields['field_options']);
+        
+        /****
+        * SET FIELD VALUES
+        ****/
+        foreach($table_fields as $field => $null){
+            $this->{$field} = $res->row[$field];
+        }
         
     }
+    
+    
+    /**
+     * GRABS THE FIRST RESULT AND LOADS THE CLASS BASED ON ASSOC ARRAY
+     * @param array $data ARRAY TO QUERY
+     */
+    public function grab($data){
+        /****
+        * GET GO AND QUERY
+        ****/
+        $go = go::get_go();
+        $res = $go->query->select('*')->from(get_class($this))->where($data)->go();
+        
+        /****
+        * UNSET SOME FIELDS
+        ****/
+        $table_fields = get_class_vars(get_class($this));
+        
+        /****
+        * UNSET SOME FIELDS
+        ****/
+        unset($table_fields['primary'],$table_fields['field_options']);
+        
+        /****
+        * SET FIELD VALUES
+        ****/
+        foreach($table_fields as $field => $null){
+            $this->{$field} = $res->row[$field];
+        }
+    }
+    
     
     /**
      * SIMPLE ROUTING FUNCTION
@@ -79,10 +132,12 @@ class model{
         * IF ID ISSET UPDATE, OTHERWISE CREATE
         ****/
         if( isset($this->{$this->primary})){
-            $this->update();
+            $response = $this->update();
+            return $response;
         }
         else{
-            $this->create();
+            $response = $this->create();
+            return $response;
         }
     }
     
@@ -95,6 +150,11 @@ class model{
         * GET TABLE FIELDS
         ******/
         $table_fields = get_class_vars(get_class($this));
+        
+        /*****
+        *GRAB PRIMARY TO BE RESET
+        *****/
+        $primaryId = $table_fields['primary'];
         
         /****
         * UNSET SOME FIELDS
@@ -114,7 +174,16 @@ class model{
         * PUSH INTO DATABASE
         ****/
         $go = go::get_go();
-        $go->query->insert($data)->into(get_class($this))->go();
+        $res = $go->query->insert($data)->into(get_class($this))->go();
+
+        /****
+        *SET THE PRIMARY KEY BACK INTO THE INSTANTIATED MODEL
+        ****/
+        if( $res->result ){
+            $this->{$primaryId} = $res->id;    
+        }
+        
+        return $res->result;
     }
     
     

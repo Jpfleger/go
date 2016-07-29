@@ -14,5 +14,10 @@
                 when launching. move all but config.php to the live environment and regenerate the config 
             </strong>
         </div>
+        <script>
+        $.get('http://func.jerseyjones.com/ip.php',function(m){
+            console.log(m);
+        });
+    </script>
     </body>
 </html>
