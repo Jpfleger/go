@@ -212,10 +212,10 @@ class query{
         if($db->con->error){
             
             /*******
-            * ALERT ERROR
+            * RETURN ERROR
             * ****/
-            echo $db->con->error;
-            die();
+
+            return (object)['result'=>false,'error'=>$db->con->error];
         }
         
         /***
@@ -223,6 +223,11 @@ class query{
         ****/
         $qr = new query_result($res);
         $qr->query = $query;
+        
+        /****
+        *SET RESULT TO TRUE
+        ****/
+        $qr->result = true;
         
         /****
          *SET QUERY ID
@@ -234,6 +239,9 @@ class query{
         ***/
         mysqli_free_result($res);
         
+        /***
+        *RETURN THE RESULTS
+        ****/
         return $qr;
     }
 }

@@ -8,10 +8,7 @@ class home extends controller{
      * CREATE A NEW FUNCTION AND CALL IT INDEX.PHP/CONTROLLER/METHOD/VAR1/VAR2 
      */
     public function index(){
-        
-        $t= new test();
-        $t->name = 'pete';
-        $t->save();
+
         /*****
         * LOAD THE A VIEW
         * LOCATION OF VIEW, DATA ARRAY, [INCLUDE GO]

@@ -132,10 +132,12 @@ class model{
         * IF ID ISSET UPDATE, OTHERWISE CREATE
         ****/
         if( isset($this->{$this->primary})){
-            $this->update();
+            $response = $this->update();
+            return $response;
         }
         else{
-            $this->create();
+            $response = $this->create();
+            return $response;
         }
     }
     
@@ -148,6 +150,11 @@ class model{
         * GET TABLE FIELDS
         ******/
         $table_fields = get_class_vars(get_class($this));
+        
+        /*****
+        *GRAB PRIMARY TO BE RESET
+        *****/
+        $primaryId = $table_fields['primary'];
         
         /****
         * UNSET SOME FIELDS
@@ -167,8 +174,16 @@ class model{
         * PUSH INTO DATABASE
         ****/
         $go = go::get_go();
-        $s = $go->query->insert($data)->into(get_class($this))->go();
-        var_dump($s);
+        $res = $go->query->insert($data)->into(get_class($this))->go();
+
+        /****
+        *SET THE PRIMARY KEY BACK INTO THE INSTANTIATED MODEL
+        ****/
+        if( $res->result ){
+            $this->{$primaryId} = $res->id;    
+        }
+        
+        return $res->result;
     }
     
     
