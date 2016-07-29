@@ -180,7 +180,6 @@ class model{
         }
                 
         /**
-         *
         * CHECK THE FIELDS IN THE CLASS AGAINST THE TABLE
         * IF THERE ARE CHANGES, MAKE THEM
         *****/
