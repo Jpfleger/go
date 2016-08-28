@@ -25,8 +25,6 @@ class view{
 
 class model{
     
-    private $primary = 'id';
-    
     /**
      * CONSTRUCTOR FUNCTION GETS GO
      * @private
@@ -337,7 +335,6 @@ class model{
                     *HAS DIRECTIVE USE DIRECTIVE OPTIONS
                     ****/
                     $sql_fields[] = $field.' '.$this->field_options[$field];
-                    
                 }else{
                     
                     /****
