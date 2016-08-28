@@ -205,7 +205,7 @@ class query{
         ****/
         $res = $db->con->query($query);
         
-        
+        var_dump($res);
         /****
         * CHECK FOR ERROR AND DISPLAY IF ERROR
         * ***/
