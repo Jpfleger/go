@@ -205,7 +205,6 @@ class query{
         ****/
         $res = $db->con->query($query);
         
-        var_dump($res);
         /****
         * CHECK FOR ERROR AND DISPLAY IF ERROR
         * ***/
@@ -263,7 +262,7 @@ class query_result {
         /****
         * GRAB FIRST RESULT AND PLACE IT IN ROW
         *****/
-        $this->row = $this->records[0];
+        $this->row = isset( $this->records[0] ) ? $this->records[0] : false;
     }
     
     

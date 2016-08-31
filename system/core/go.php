@@ -18,16 +18,9 @@ class go{
     *RETURNS THE SINGLE INSTSTANCE THAT WAS LOADED
     *********/
     public static function get_go(){
+        //RETURN THE SINGLETON
+        return (!isset(static::$go)) ? new go() : static::$go;
         
-        //CHECK FOR INSTANCE
-        if(!isset(static::$go)){
-            
-            //RETURN NEW INSTANCE
-            static::$go = new go();
-        }
-        
-        //RETURN ALREADY SET INSTANCE
-        return static::$go;
     }
     
     //USED TO CONSTRUCT THE FIRST INSTANCE
