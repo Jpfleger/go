@@ -152,12 +152,12 @@ class model{
         /*****
         *GRAB PRIMARY TO BE RESET
         *****/
-        $primaryId = $table_fields['primary'];
+        $primaryId = $table_fields['field_options']['primary'];
         
         /****
         * UNSET SOME FIELDS
         ****/
-        unset($table_fields['primary'],$table_fields['field_options']);
+        unset($table_fields['field_options']);
         
         /****
         * LOOP THROUGH THE TABLES AND CREATE DATA FOR QUERY CALL

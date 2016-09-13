@@ -14,6 +14,31 @@ class router {
         //GRAB THE ROUTE OF THE 
         $this->route = explode('/', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
         
+        
+        /*****
+        *CHECK FOR GET PARAM
+        *THE WAY FUNCTIONS FIRE CONFUSES STANDARD GET REQUESTS
+        *THIS WILL CHECK TO MAKE SURE THERE IS A ? IN THE URL AND IF SO:
+        *TURN THE PARAMS INTO THE $_GET VAR
+        *****/
+        if(strpos($_SERVER['REQUEST_URI'],'?') ){
+            /*****
+            * UNSET CURRENT GET
+            *****/
+            unset($_GET);
+            /*****
+            * CONSTRUCT PARAMS
+            *****/
+            $params = explode('&',substr($_SERVER['REQUEST_URI'],strpos($_SERVER['REQUEST_URI'],'?')+1));
+            /*****
+            * SPILT AND SET GET
+            *****/
+            foreach($params as $k => $v){
+                $split = explode('=',$v);
+                $_GET[$split[0]] = isset($split[1]) ? $split[1] : '';
+            }
+        }
+        
         /***********
         * REMOVE THE INDEX FILE AND THE OPENING BLANK VALUE
         * THIS METHOD WILL NOT BE AFFECTED BY HT ACCESS CHANGES

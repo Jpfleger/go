@@ -9,6 +9,7 @@ class home extends controller{
      */
     public function index(){
         $c = new test;
+
         /*****
         * LOAD THE A VIEW
         * LOCATION OF VIEW, DATA ARRAY, [INCLUDE GO]
