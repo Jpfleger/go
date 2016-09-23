@@ -90,6 +90,11 @@ class query{
      * @return object QUERY RESULT OBJECT
      */
     public function go(){
+        /*****
+        * RETURN VARIABLE LETS THE QUERY FUNCTION KNOW
+        * WHETHER TO RETURN RESULTS;
+        *****/
+        $return = true;
         
         /***
         * SWTICH STATEMENT FOR QUERY TYPE
@@ -100,6 +105,9 @@ class query{
             * INSERT
             **/
             case 'INSERT':
+                //NO NEED FOR RESULTS
+                $return = false;
+                
                 $fields = array_keys($this->data);
                 $sql = 'INSERT INTO '.$this->table.' ('.implode(', ',$fields).') VALUES(';
                 foreach($this->data as $k => $v){
@@ -109,7 +117,7 @@ class query{
                         $vals[] = '"'.$v.'"';
                     }
                 }
-
+                
                 $sql .= implode(',',$vals ).')';
             break;
                 
@@ -117,6 +125,9 @@ class query{
             * UPDATE
             **/    
             case 'UPDATE':
+                //NO NEED FOR RESULTS
+                $return = false;
+                
                 $fields = array_keys($this->data);
                 foreach($this->data as $k => $v){
                     $change = $k.'=';
@@ -170,11 +181,13 @@ class query{
             * DELETE
             **/
             case 'DELETE':
+                //NO NEED FOR RESULTS
+                $return = false;
                 $sql = 'DELETE FROM '.$this->table.' WHERE '.$this->where;
             break;
         }
         
-        return $this->sql($sql);
+        return $this->sql($sql,$return);
     }
     
     
@@ -183,7 +196,7 @@ class query{
      * @param  string $query SQL QUERY STRING
      * @return object RETURNS FORMATED ARRAY
      */
-    public function sql($query){
+    public function sql($query,$return = false){
         /******
         *GET THE DATABASE CONNECTION
         ******/
@@ -216,6 +229,12 @@ class query{
 
             return (object)['result'=>false,'error'=>$db->con->error];
         }
+        
+        /****
+        *RETURN IF NO RESULT NEEDED
+        ***/
+        
+        if($return) return;
         
         /***
         * RETURN FORMATED RESULT
