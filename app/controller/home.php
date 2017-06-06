@@ -9,20 +9,6 @@ class home extends controller{
      */
     public function index(){
         
-        date_default_timezone_set('America/New_York');
-        $res = file_get_contents('https://api.seatgeek.com/2/events?q=new+york+jets');
-        $res = json_decode($res);
-        echo '<pre>';
-        
-        foreach($res->events as $k){
-            $events['name'] = $k->title;
-            $events['date'] = strtotime($k->datetime_local);
-            $e[] = $events;
-        }
-        
-        var_dump($e);
-        $c = new test;
-
         /*****
         * LOAD THE A VIEW
         * LOCATION OF VIEW, DATA ARRAY, [INCLUDE GO]

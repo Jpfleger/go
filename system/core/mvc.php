@@ -174,14 +174,20 @@ class model{
         $go = go::get_go();
         $res = $go->query->insert($data)->into(get_class($this))->go();
 
+        /***
+        *GET MOST RECENT
+        ***/
+        $res = $go->query->select('MAX(id) as id')->from(get_class($this))->go();
+
         /****
         *SET THE PRIMARY KEY BACK INTO THE INSTANTIATED MODEL
         ****/
         if( $res->result ){
-            $this->{$primaryId} = $res->id;    
+            $this->get( $res->row['id'] );    
         }
         
         return $res->result;
+        
     }
     
     

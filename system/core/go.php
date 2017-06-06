@@ -19,8 +19,10 @@ class go{
     *********/
     public static function get_go(){
         //RETURN THE SINGLETON
-        return (!isset(static::$go)) ? new go() : static::$go;
-        
+        if (null === static::$go) {
+            static::$go = new static();
+        }
+        return static::$go;
     }
     
     //USED TO CONSTRUCT THE FIRST INSTANCE

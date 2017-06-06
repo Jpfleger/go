@@ -1,6 +1,22 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+/*****************
+* GLOBAL FUNCTIONS TO BE USED
+* TO REPLACE CERTIAN DIFFICULT
+* PHP FUNCTIONS
+*****************/
+
+/******
+* DUMP AN OBJECT
+******/
+function dump($ob){
+    echo '<pre>';
+    var_dump($ob);
+    echo '</pre>';
+}
+
+
 /*************
 *THIS IS THE BOOTSTRAP FILE
 *YOU DON'T NEED TO MAKE ANY CHANGES TO THIS FILE

@@ -14,31 +14,6 @@ class router {
         //GRAB THE ROUTE OF THE 
         $this->route = explode('/', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
         
-        
-        /*****
-        *CHECK FOR GET PARAM
-        *THE WAY FUNCTIONS FIRE CONFUSES STANDARD GET REQUESTS
-        *THIS WILL CHECK TO MAKE SURE THERE IS A ? IN THE URL AND IF SO:
-        *TURN THE PARAMS INTO THE $_GET VAR
-        *****/
-        if(strpos($_SERVER['REQUEST_URI'],'?') ){
-            /*****
-            * UNSET CURRENT GET
-            *****/
-            unset($_GET);
-            /*****
-            * CONSTRUCT PARAMS
-            *****/
-            $params = explode('&',substr($_SERVER['REQUEST_URI'],strpos($_SERVER['REQUEST_URI'],'?')+1));
-            /*****
-            * SPILT AND SET GET
-            *****/
-            foreach($params as $k => $v){
-                $split = explode('=',$v);
-                $_GET[$split[0]] = isset($split[1]) ? $split[1] : '';
-            }
-        }
-        
         /***********
         * REMOVE THE INDEX FILE AND THE OPENING BLANK VALUE
         * THIS METHOD WILL NOT BE AFFECTED BY HT ACCESS CHANGES
@@ -113,24 +88,22 @@ class router {
         $c = config::get_config();
         if( $c->GATED ){
             
+
             /*****
             * APPLICATION IS GATED, CHECK IF CONTROLLER IS GATED
             ******/
             if( !in_array($this->controller, $c->NON_GATED_CONTROLLERS ) ){
+                /**
+                *GET GO
+                ***/
+                $go = go::get_go();
                 
-                /****
-                * CONTROLLER IS GATED, REPLACE WITH FALLBACK
-                *****/
-                $this->controller = strtolower( $c->GATED_FALLBACK_CONTROLLER );
-                
-                /****
-                * REPLACE WITH DEFAULT METHOD 
-                *****/
-                $this->method = 'index';
+                $this->controller = ($go->session->check()) ?  $this->controller : strtolower( $c->GATED_FALLBACK_CONTROLLER ) ;
+                $this->method = ($go->session->check()) ?  $this->method : 'index';
                 
             }
         }
-         
+
         if(file_exists(BASEPATH.'app/controller/'.$this->controller.'.php')){
             
             /**
@@ -146,7 +119,6 @@ class router {
             * **/
              
             $route = new $this->controller;
-            
             
             /**
             * NOW CHECK IF THE METHOD EXISTS IN THE CONTROLLER CLASS

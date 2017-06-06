@@ -1,7 +1,6 @@
 <?php
 class sys {
     public function __construct(){
-        
         /****
         *REFERNCE CONTOLLERS
         ****/
@@ -16,26 +15,5 @@ class sys {
                 }
             }
         }
-        
-        
-        /*****************
-        * GLOBAL FUNCTIONS TO BE USED
-        * TO REPLACE CERTIAN DIFFICULT
-        * PHP FUNCTIONS
-        *****************/
-        
-        /******
-        * DUMP AN OBJECT
-        ******/
-        function dump($ob){
-            echo '<pre>';
-            var_dump($ob);
-            echo '</pre>';
-        }
-        
-        
     }
-    
-    
-    
 }

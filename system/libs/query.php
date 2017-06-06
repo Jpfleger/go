@@ -80,9 +80,7 @@ class query{
     public function where($string){
         $this->where = $string;
         return $this;
-    }
-    
-    
+    }    
     
     
     /**
@@ -90,11 +88,6 @@ class query{
      * @return object QUERY RESULT OBJECT
      */
     public function go(){
-        /*****
-        * RETURN VARIABLE LETS THE QUERY FUNCTION KNOW
-        * WHETHER TO RETURN RESULTS;
-        *****/
-        $return = true;
         
         /***
         * SWTICH STATEMENT FOR QUERY TYPE
@@ -150,6 +143,7 @@ class query{
             * SELECT
             **/    
             case 'SELECT':
+                $return = true;
                 $sql = 'SELECT '.$this->fields.' FROM '.$this->table;
                 if( isset($this->where) && is_array($this->where) ){
                     
@@ -169,6 +163,8 @@ class query{
                     ****/
                     $sql .=' WHERE '.implode('AND ',$data);
                     
+                    
+                    
                 }else if( isset( $this->where ) ){
                     /***
                     * WHERE IS A STRING
@@ -176,7 +172,6 @@ class query{
                     $sql .=' WHERE '.$this->where;
                 }
             break;
-                
             /**
             * DELETE
             **/
@@ -186,7 +181,9 @@ class query{
                 $sql = 'DELETE FROM '.$this->table.' WHERE '.$this->where;
             break;
         }
-        
+        //UNSET QUERY TYPE
+        unset($this->query_type,$this->table,$this->where,$this->fields,$this->data);
+        //RETURN THE QUERY RESULT
         return $this->sql($sql,$return);
     }
     
@@ -196,7 +193,7 @@ class query{
      * @param  string $query SQL QUERY STRING
      * @return object RETURNS FORMATED ARRAY
      */
-    public function sql($query,$return = false){
+    public function sql($query,$return){
         /******
         *GET THE DATABASE CONNECTION
         ******/
@@ -211,7 +208,6 @@ class query{
         * ADD QUERIES TO GO FOR DEBUGGING
         * ***/
         $go->queries[] = $query;
-        
         
         /***
         * SEND QUERY THROUGH TO THE DATABASE
@@ -234,7 +230,7 @@ class query{
         *RETURN IF NO RESULT NEEDED
         ***/
         
-        if($return) return;
+        if(!$return) return;
         
         /***
         * RETURN FORMATED RESULT
